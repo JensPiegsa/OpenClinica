@@ -6,12 +6,7 @@ MAINTAINER Jens Piegsa  <piegsa@gmail.com>
 
 # install tools
 RUN yum -y update  
-RUN yum -y install wget
-RUN yum -y install tar
-RUN yum -y install unzip
-
-# install java 7
-RUN yum -y install java-1.7.0-openjdk  
+RUN yum -y install wget tar unzip java-1.7.0-openjdk
 
 # install tomcat 7
 ENV TOMCAT_VERSION 7.0.55
