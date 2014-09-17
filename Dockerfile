@@ -2,14 +2,11 @@
 FROM tutum/tomcat:7.0
 MAINTAINER Jens Piegsa  <piegsa@gmail.com>
 
-# set versions
-#ENV TOMCAT_VERSION 7.0.52
 ENV OC_VERSION 3.3
 
-# install tools
 RUN apt-get update && apt-get install unzip
 
-#ENV PATH $PATH:$CATALINA_HOME/bin
+ENV JAVA_OPTS $JAVA_OPTS -Xmx1280m -XX:+UseParallelGC -XX:MaxPermSize=180m -XX:+CMSClassUnloadingEnabled
 
 # install OpenClinica and OpenClinica-ws
 RUN mkdir /tmp/oc && \
