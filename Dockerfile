@@ -6,7 +6,7 @@ ENV OC_VERSION 3.3
 
 RUN apt-get update && apt-get install unzip
 
-ENV JAVA_OPTS $JAVA_OPTS -Xmx1280m -XX:+UseParallelGC -XX:MaxPermSize=180m -XX:+CMSClassUnloadingEnabled
+ENV JAVA_OPTS -Xmx1280m -XX:+UseParallelGC -XX:MaxPermSize=180m -XX:+CMSClassUnloadingEnabled
 
 # install OpenClinica and OpenClinica-ws
 RUN mkdir /tmp/oc && \
