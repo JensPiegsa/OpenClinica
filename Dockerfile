@@ -13,8 +13,8 @@ RUN yum -y install wget tar unzip java-1.7.0-openjdk
 # install tomcat
 ENV CATALINA_HOME /usr/local/tomcat
 RUN wget -q https://archive.apache.org/dist/tomcat/tomcat-7/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz -O /tmp/tomcat.tar.gz
-RUN tar xzf /tmp/tomcat.tar.gz -C ${CATALINA_HOME}/..
-RUN ln -s ${CATALINA_HOME}/../apache-tomcat-${TOMCAT_VERSION} ${CATALINA_HOME}
+RUN tar xzf /tmp/tomcat.tar.gz -C ${CATALINA_HOME%/*}
+RUN ln -s ${CATALINA_HOME%/*}/apache-tomcat-${TOMCAT_VERSION} ${CATALINA_HOME}
 RUN rm /tmp/tomcat.tar.gz
 RUN rm -rf ${CATALINA_HOME}/webapps/examples ${CATALINA_HOME}/webapps/docs 
 ENV PATH $PATH:$CATALINA_HOME/bin
