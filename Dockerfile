@@ -7,7 +7,7 @@ MAINTAINER Jens Piegsa  <piegsa@gmail.com>
 ENV OC_VERSION 3.3
 
 # install tools
-#RUN apt-get install wget tar unzip
+RUN apt-get update && apt-get install unzip
 
 #ENV PATH $PATH:$CATALINA_HOME/bin
 
