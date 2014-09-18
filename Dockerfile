@@ -17,12 +17,16 @@ RUN mkdir /tmp/oc && \
     cd /tmp/oc/OpenClinica-${OC_VERSION}/distribution && \
     unzip -oq OpenClinica.war -d OpenClinica && \
     cp -rf OpenClinica* ${CATALINA_HOME}/webapps && \
-    cd /tmp/oc/OpenClinica-ws-${OC_VERSION}/distribution && \
-    unzip -oq OpenClinica-ws.war -d OpenClinica-ws && \
-    cp -rf OpenClinica* ${CATALINA_HOME}/webapps
+    #cd /tmp/oc/OpenClinica-ws-${OC_VERSION}/distribution && \
+    #unzip -oq OpenClinica-ws.war -d OpenClinica-ws && \
+    #cp -rf OpenClinica* ${CATALINA_HOME}/webapps
     
 #RUN rm -rf /tmp/oc
+
+RUN mkdir ${CATALINA_HOME}/openclinica.data/xslt -p && \
+    mv ${CATALINA_HOME}/webapps/OpenClinica/WEB-INF/lib/servlet-api-2.3.jar ../
 
 # start it up
 #EXPOSE 8080
 #CMD $CATALINA_HOME/bin/catalina.sh run
+CMD /run.sh & && /bin/bash
