@@ -30,4 +30,4 @@ RUN mkdir ${CATALINA_HOME}/openclinica.data/xslt -p && \
 # start it up
 #EXPOSE 8080
 #CMD $CATALINA_HOME/bin/catalina.sh run
-CMD /run.sh & && /bin/bash
+#CMD /run.sh & && /bin/bash
