@@ -16,7 +16,8 @@ RUN mkdir /tmp/oc && \
     unzip -oq /tmp/oc/openclinica-ws -d /tmp/oc && \
     cd /tmp/oc/OpenClinica-${OC_VERSION}/distribution && \
     unzip -oq OpenClinica.war -d OpenClinica && \
-    cp -rf OpenClinica* ${CATALINA_HOME}/webapps && \
+    cp -rf OpenClinica* ${CATALINA_HOME}/webapps
+    #&& \
     #cd /tmp/oc/OpenClinica-ws-${OC_VERSION}/distribution && \
     #unzip -oq OpenClinica-ws.war -d OpenClinica-ws && \
     #cp -rf OpenClinica* ${CATALINA_HOME}/webapps
