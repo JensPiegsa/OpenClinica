@@ -10,7 +10,7 @@ OpenClinica via Docker
 #### 2. Start PostgreSQL server
 
 ```sh
-docker run --name ocdb -d --publish 127.0.0.1:5432:5432 postgres:9.3.5
+docker run --name ocdb -d --publish 5432:5432 postgres:9.3.5
 docker run --link ocdb:postgres --rm postgres:9.3.5 sh -c '\
  psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres -c \
   "CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD '\''clinica'\'' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE" && \
