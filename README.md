@@ -1,4 +1,4 @@
 OpenClinica
 ===========
 
-* see: [/OpenClinica](OpenClinica/tree/master/OpenClinica/README.md)
+* see: [/OpenClinica](tree/master/OpenClinica/README.md)
