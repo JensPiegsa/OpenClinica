@@ -1,4 +1,4 @@
 OpenClinica
 ===========
 
-* see: [/OpenClinica](OpenClinica/README.md)
+* see: [/OpenClinica](OpenClinica)
