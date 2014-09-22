@@ -1,7 +1,12 @@
 OpenClinica via Docker
 ======================
 
-*Currently only for testing purposes!*
+This folder contains the *Dockerfile*, a startup script and the following instructions for running a Docker container  which you can use to give OpenClinica a try. An image built with this Dockerfile is available on [Docker Hub](https://registry.hub.docker.com/u/piegsaj/openclinica/).
+
+**IMPORTANT:** *This image is meant for trying out OpenClinica and not meant for running a production server or for storing important study data.*
+
+Steps
+-----
 
 #### 1. Increase available memory
 
