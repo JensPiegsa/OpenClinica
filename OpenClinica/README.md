@@ -33,7 +33,7 @@ ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'
 
 #### 5. Run OpenClinica
 
-* open up `<ip>/OpenClinica` in your browser
+* open up `<IP of your host>/OpenClinica` in your browser
 * first time login credentials: `root` / `12345678`
 
 *Feedback is welcome.*
