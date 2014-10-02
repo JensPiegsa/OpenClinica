@@ -37,7 +37,7 @@ docker run --name oc -d -p 80:8080 -e TOMCAT_PASS="admin" --link ocdb:postgres p
 ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'
 ```
 
-#### 5. Run OpenClinica
+#### 6. Run OpenClinica
 
 * open up [http://&lt;ip.of.your.host&gt;/OpenClinica](http://<ip.of.your.host>/OpenClinica) in your browser
 * first time login credentials: `root` / `12345678`
