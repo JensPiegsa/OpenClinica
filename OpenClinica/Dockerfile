@@ -13,8 +13,8 @@ ENV OC_WS_HOME ${CATALINA_HOME}/webapps/OpenClinica-ws
 ENV OC_VERSION 3.4.1
 
 RUN ["mkdir", "/tmp/oc"]
-RUN ["wget", "--no-check-certificate", "-O/tmp/oc/openclinica.zip", "http://www2.openclinica.com/l/5352/2014-12-22/xpy3t"]
-RUN ["wget", "--no-check-certificate", "-O/tmp/oc/openclinica-ws.zip", "http://www2.openclinica.com/l/5352/2014-12-22/xpy15"]
+RUN ["wget", "-q", "--no-check-certificate", "-O/tmp/oc/openclinica.zip", "http://www2.openclinica.com/l/5352/2014-12-22/xpy3t"]
+RUN ["wget", "-q", "--no-check-certificate", "-O/tmp/oc/openclinica-ws.zip", "http://www2.openclinica.com/l/5352/2014-12-22/xpy15"]
 
 RUN cd /tmp/oc && \
     jar xf openclinica.zip && \
