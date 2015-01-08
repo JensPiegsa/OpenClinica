@@ -10,11 +10,11 @@ MAINTAINER Jens Piegsa <piegsa@gmail.com>
 ENV OC_HOME    ${CATALINA_HOME}/webapps/OpenClinica
 ENV OC_WS_HOME ${CATALINA_HOME}/webapps/OpenClinica-ws
 
-ENV OC_VERSION 3.3
+ENV OC_VERSION 3.4.1
 
 RUN mkdir /tmp/oc && \
-    wget -q http://www2.openclinica.com/l/5352/2014-07-25/x24m7 -O /tmp/oc/openclinica.zip && \
-    wget -q https://community.openclinica.com/sites/fileuploads/akaza/cms-community/OpenClinica-ws-3.3.zip -O /tmp/oc/openclinica-ws.zip
+    wget -q http://www2.openclinica.com/l/5352/2014-12-22/xpy3t -O /tmp/oc/openclinica.zip && \
+    wget -q http://www2.openclinica.com/l/5352/2014-12-22/xpy15 -O /tmp/oc/openclinica-ws.zip
 
 RUN cd /tmp/oc && \
     jar xf openclinica.zip && \
