@@ -5,7 +5,7 @@
 
 FROM tutum/tomcat:7.0
 
-MAINTAINER Jens Piegsa <piegsa@gmail.com>
+MAINTAINER Jens Piegsa (piegsa@gmail.com)
 
 ENV OC_HOME    ${CATALINA_HOME}/webapps/OpenClinica
 ENV OC_WS_HOME ${CATALINA_HOME}/webapps/OpenClinica-ws
@@ -13,8 +13,8 @@ ENV OC_WS_HOME ${CATALINA_HOME}/webapps/OpenClinica-ws
 ENV OC_VERSION 3.4.1
 
 RUN ["mkdir", "/tmp/oc"]
-RUN ["wget", "-k", "-q", "-O /tmp/oc/openclinica.zip", "http://www2.openclinica.com/l/5352/2014-12-22/xpy3t"]
-RUN ["wget", "-k", "-q", "-O /tmp/oc/openclinica-ws.zip", "http://www2.openclinica.com/l/5352/2014-12-22/xpy15"]
+RUN ["wget", "-v", "-O /tmp/oc/openclinica.zip", "http://www2.openclinica.com/l/5352/2014-12-22/xpy3t"]
+RUN ["wget", "-v", "-O /tmp/oc/openclinica-ws.zip", "http://www2.openclinica.com/l/5352/2014-12-22/xpy15"]
 
 RUN cd /tmp/oc && \
     jar xf openclinica.zip && \
