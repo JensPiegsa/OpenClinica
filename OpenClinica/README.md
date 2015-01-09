@@ -33,9 +33,18 @@ docker run --name oc -d -p 80:8080 -e TOMCAT_PASS="admin" --link ocdb:postgres p
 
 ### 5. Get the external IP address
 
+* from within the virtual machine use:
+
 ```sh
 ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'
 ```
+
+**or** from your host system simply call:
+
+```sh
+boot2docker ip
+```
+
 
 ### 6. Run OpenClinica
 
