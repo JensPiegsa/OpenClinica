@@ -1,5 +1,5 @@
-OpenClinica via Docker
-======================
+OpenClinica 3.4.1 via Docker
+============================
 
 This folder contains the *Dockerfile*, a startup script and the following instructions for running a Docker container  which you can use to give OpenClinica a try. An image built with this Dockerfile is available on [Docker Hub](https://registry.hub.docker.com/u/piegsaj/openclinica/).
 
@@ -16,19 +16,28 @@ Steps
 ### 2. Start the PostgreSQL database server
 
 ```sh
-docker run --name ocdb -d -p 5432:5432 postgres:9.3.5
+docker run --name ocdb -d -e POSTGRES_PASSWORD=postgres123 postgres:8
 ```
 
 ### 3. Initialize the database
 
+Create database user and schemas:
+
 ```sh
-docker run --link ocdb:postgres --rm postgres:9.3.5 sh -c 'psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres -c  "CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD '\''clinica'\'' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE" && exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres -c "CREATE DATABASE openclinica WITH ENCODING='\''UTF8'\'' OWNER=clinica"'
+docker run --link=ocdb:ocdb --rm postgres:8 sh -c 'export PGPASSWORD='postgres123' && psql -h ocdb -p "$OCDB_PORT_5432_TCP_PORT" -U postgres -c  "CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD '\''clinica'\'' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE" && psql -h ocdb -p "$OCDB_PORT_5432_TCP_PORT" -U postgres -c "CREATE DATABASE openclinica WITH ENCODING='\''UTF8'\'' OWNER=clinica" && psql -h ocdb -p "$OCDB_PORT_5432_TCP_PORT" -U postgres -c "CREATE DATABASE \"openclinica-ws\" WITH ENCODING='\''UTF8'\'' OWNER=clinica"'
 ```
 
-### 4. Start Tomcat serving OpenClinica
+Allow user to connect:
 
 ```sh
-docker run --name oc -d -p 80:8080 -e TOMCAT_PASS="admin" --link ocdb:postgres piegsaj/openclinica
+docker exec ocdb sh -c 'echo "host all  clinica    0.0.0.0/0  md5" >> $PGDATA/pg_hba.conf'
+docker exec ocdb su postgres -c '/usr/lib/postgresql/$PG_MAJOR/bin/pg_ctl reload -D $PGDATA'
+```
+
+### 4. Start Tomcat serving OpenClinica and OpenClinica-ws
+
+```sh
+docker run --name oc -d -p 80:8080 -e TOMCAT_PASS="admin" --link=ocdb:ocdb piegsaj/openclinica
 ```
 
 ### 5. Get the external IP address
@@ -39,7 +48,7 @@ docker run --name oc -d -p 80:8080 -e TOMCAT_PASS="admin" --link ocdb:postgres p
 ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'
 ```
 
-**or** from your host system simply call:
+**or** from your host system simply call if you are using boot2docker:
 
 ```sh
 boot2docker ip
