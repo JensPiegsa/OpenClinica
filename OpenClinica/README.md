@@ -25,19 +25,19 @@ docker run --name=ocdb-data -d -v /var/lib/postgresql/data postgres:8 true
 docker run --name=ocdb -d --volumes-from ocdb-data -e POSTGRES_PASSWORD=postgres123 postgres:8
 ```
 
-### 3. Initialize the database
+### 4. Initialize the database
 
 ```sh
 docker exec ocdb su postgres -c 'psql -c  "CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD '\''clinica'\'' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE" && psql -c "CREATE DATABASE openclinica WITH ENCODING='\''UTF8'\'' OWNER=clinica" && psql -c "CREATE DATABASE \"openclinica-ws\" WITH ENCODING='\''UTF8'\'' OWNER=clinica" && echo "host all  clinica    0.0.0.0/0  md5" >> $PGDATA/pg_hba.conf && /usr/lib/postgresql/$PG_MAJOR/bin/pg_ctl reload -D $PGDATA'
 ```
 
-### 4. Start Tomcat serving OpenClinica and OpenClinica-ws
+### 5. Start Tomcat serving OpenClinica and OpenClinica-ws
 
 ```sh
 docker run --name=oc -h oc -d -p 80:8080 -e TOMCAT_PASS="admin" --link=ocdb:ocdb piegsaj/openclinica
 ```
 
-### 5. Get the external IP address
+### 6. Get the external IP address
 
 * from within the virtual machine use:
 
@@ -52,7 +52,7 @@ boot2docker ip
 ```
 
 
-### 6. Run OpenClinica
+### 7. Run OpenClinica
 
 * open up [http://&lt;ip.of.your.host&gt;/OpenClinica](http://<ip.of.your.host>/OpenClinica) in your browser
 * first time login credentials: `root` / `12345678`
