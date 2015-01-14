@@ -13,31 +13,28 @@ Steps
 * follow the [installation instructions](http://docs.docker.com/installation/) for your host system
     * **note:** with [boot2docker 1.2.0](https://github.com/boot2docker/boot2docker) the maximum RAM size can (only) be adjusted through the user interface of VirtualBox (run it from the start menu, stop the virtual machine, change the configuration to e.g. 4096MB, close it and use the desktop link "boot2docker Start")
 
-### 2. Start the PostgreSQL database server
+### 2. Start a data-only container
 
 ```sh
-docker run --name ocdb -d -e POSTGRES_PASSWORD=postgres123 postgres:8
+docker run --name=ocdb-data -d -v /var/lib/postgresql/data postgres:8 true
+```
+
+### 3. Start the PostgreSQL database server
+
+```sh
+docker run --name=ocdb -d --volumes-from ocdb-data -e POSTGRES_PASSWORD=postgres123 postgres:8
 ```
 
 ### 3. Initialize the database
 
-Create database user and schemas:
-
 ```sh
-docker run --link=ocdb:ocdb --rm postgres:8 sh -c 'export PGPASSWORD='postgres123' && psql -h ocdb -p "$OCDB_PORT_5432_TCP_PORT" -U postgres -c  "CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD '\''clinica'\'' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE" && psql -h ocdb -p "$OCDB_PORT_5432_TCP_PORT" -U postgres -c "CREATE DATABASE openclinica WITH ENCODING='\''UTF8'\'' OWNER=clinica" && psql -h ocdb -p "$OCDB_PORT_5432_TCP_PORT" -U postgres -c "CREATE DATABASE \"openclinica-ws\" WITH ENCODING='\''UTF8'\'' OWNER=clinica"'
-```
-
-Allow user to connect:
-
-```sh
-docker exec ocdb sh -c 'echo "host all  clinica    0.0.0.0/0  md5" >> $PGDATA/pg_hba.conf'
-docker exec ocdb su postgres -c '/usr/lib/postgresql/$PG_MAJOR/bin/pg_ctl reload -D $PGDATA'
+docker exec ocdb su postgres -c 'psql -c  "CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD '\''clinica'\'' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE" && psql -c "CREATE DATABASE openclinica WITH ENCODING='\''UTF8'\'' OWNER=clinica" && psql -c "CREATE DATABASE \"openclinica-ws\" WITH ENCODING='\''UTF8'\'' OWNER=clinica" && echo "host all  clinica    0.0.0.0/0  md5" >> $PGDATA/pg_hba.conf && /usr/lib/postgresql/$PG_MAJOR/bin/pg_ctl reload -D $PGDATA'
 ```
 
 ### 4. Start Tomcat serving OpenClinica and OpenClinica-ws
 
 ```sh
-docker run --name oc -d -p 80:8080 -e TOMCAT_PASS="admin" --link=ocdb:ocdb piegsaj/openclinica
+docker run --name=oc -h oc -d -p 80:8080 -e TOMCAT_PASS="admin" --link=ocdb:ocdb piegsaj/openclinica
 ```
 
 ### 5. Get the external IP address
@@ -48,7 +45,7 @@ docker run --name oc -d -p 80:8080 -e TOMCAT_PASS="admin" --link=ocdb:ocdb piegs
 ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'
 ```
 
-**or** from your host system simply call if you are using boot2docker:
+**or** if you are using boot2docker simply call from your host system:
 
 ```sh
 boot2docker ip
