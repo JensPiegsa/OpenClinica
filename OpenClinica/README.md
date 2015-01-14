@@ -39,7 +39,7 @@ docker run --name=oc -h oc -d -p 80:8080 -e TOMCAT_PASS="admin" --link=ocdb:ocdb
 
 ### 6. Get the external IP address
 
-* from within the virtual machine use:
+From within the virtual machine you may use:
 
 ```sh
 ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'
