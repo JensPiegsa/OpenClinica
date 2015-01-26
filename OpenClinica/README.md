@@ -16,31 +16,31 @@ Steps
 ### 2. Start a data-only container with a volume for the database
 
 ```sh
-docker run --name=ocdb-data -v /var/lib/postgresql/data postgres:8 true
+sudo docker run --name=ocdb-data -v /var/lib/postgresql/data postgres:8 true
 ```
 
 ### 3. Start the PostgreSQL database server
 
 ```sh
-docker run --name=ocdb -d --volumes-from ocdb-data -e POSTGRES_PASSWORD=postgres123 postgres:8
+sudo docker run --name=ocdb -d --volumes-from ocdb-data -e POSTGRES_PASSWORD=postgres123 postgres:8
 ```
 
 ### 4. Initialize the database
 
 ```sh
-docker exec ocdb su postgres -c 'psql -c  "CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD '\''clinica'\'' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE" && psql -c "CREATE DATABASE openclinica WITH ENCODING='\''UTF8'\'' OWNER=clinica" && psql -c "CREATE DATABASE \"openclinica-ws\" WITH ENCODING='\''UTF8'\'' OWNER=clinica" && echo "host all  clinica    0.0.0.0/0  md5" >> $PGDATA/pg_hba.conf && /usr/lib/postgresql/$PG_MAJOR/bin/pg_ctl reload -D $PGDATA'
+sudo docker exec ocdb su postgres -c 'psql -c  "CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD '\''clinica'\'' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE" && psql -c "CREATE DATABASE openclinica WITH ENCODING='\''UTF8'\'' OWNER=clinica" && psql -c "CREATE DATABASE \"openclinica-ws\" WITH ENCODING='\''UTF8'\'' OWNER=clinica" && echo "host all  clinica    0.0.0.0/0  md5" >> $PGDATA/pg_hba.conf && /usr/lib/postgresql/$PG_MAJOR/bin/pg_ctl reload -D $PGDATA'
 ```
 
 ### 5. Start a data-only container with a volume for files written by OpenClinica
 
 ```sh
-docker run --name=oc-data -v /tomcat/openclinica.data piegsaj/openclinica true
+sudo docker run --name=oc-data -v /tomcat/openclinica.data piegsaj/openclinica true
 ```
 
 ### 6. Start Tomcat serving OpenClinica and OpenClinica-ws
 
 ```sh
-docker run --name=oc -h oc -d --volumes-from oc-data -p 80:8080 -e TOMCAT_PASS="admin" -e LOG_LEVEL=INFO -e TZ=UTC-1 --link=ocdb:ocdb piegsaj/openclinica
+sudo docker run --name=oc -h oc -d --volumes-from oc-data -p 80:8080 -e TOMCAT_PASS="admin" -e LOG_LEVEL=INFO -e TZ=UTC-1 --link=ocdb:ocdb piegsaj/openclinica
 ```
 (the environment variables for logging level and timezone are optional)
 
@@ -69,13 +69,13 @@ boot2docker ip
 Backup a database dump to the current directory on the host:
 
 ```sh
-echo "postgres123" | docker run -i --rm --link ocdb:ocdb -v $PWD:/tmp postgres:8 sh -c 'pg_dump -h ocdb -p $OCDB_PORT_5432_TCP_PORT -U postgres -F tar -v openclinica > /tmp/ocdb_pg_dump_$(date +%Y-%m-%d_%H-%M-%S).tar'
+echo "postgres123" | sudo docker run -i --rm --link ocdb:ocdb -v $PWD:/tmp postgres:8 sh -c 'pg_dump -h ocdb -p $OCDB_PORT_5432_TCP_PORT -U postgres -F tar -v openclinica > /tmp/ocdb_pg_dump_$(date +%Y-%m-%d_%H-%M-%S).tar'
 ```
 
 Backup the OpenClinica data folder to the current directory on the host:
 
 ```sh
-docker run --rm --volumes-from oc-data -v $PWD:/tmp piegsaj/openclinica tar cvf /tmp/oc_data_backup_$(date +%Y-%m-%d_%H-%M-%S).tar /tomcat/openclinica.data
+sudo docker run --rm --volumes-from oc-data -v $PWD:/tmp piegsaj/openclinica tar cvf /tmp/oc_data_backup_$(date +%Y-%m-%d_%H-%M-%S).tar /tomcat/openclinica.data
 ```
 
 ### Contribute
