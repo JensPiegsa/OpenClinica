@@ -8,6 +8,14 @@ sed -i "/^dbHost=.*/c\dbHost=ocdb" /tomcat/webapps/OpenClinica/WEB-INF/classes/d
 sed -i "/^dbPort=.*/c\dbPort=$OCDB_PORT_5432_TCP_PORT" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
 sed -i "/^dbHost=.*/c\dbHost=ocdb" /tomcat/webapps/OpenClinica-ws/WEB-INF/classes/datainfo.properties
 sed -i "/^dbPort=.*/c\dbPort=$OCDB_PORT_5432_TCP_PORT" /tomcat/webapps/OpenClinica-ws/WEB-INF/classes/datainfo.properties
+sed -i "/^userAccountNotification=.*/c\userAccountNotification=admin" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
+sed -i "/^# rssUrl=.*/c\rssUrl=" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
+sed -i "/^# rssMore=.*/c\rssMore=" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
+sed -i "/^# about\.text1=.*/c\about.text1=powered by" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
+sed -i "/^# about\.text2=.*/c\about.text2=<a href=\"https://mosaic-greifswald.de\">mosaic-greifswald.de</a>" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
+sed -i "/^# supportURL=.*/c\supportURL=https://mosaic-greifswald.de/openclinica" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
+sed -i "/^collectStats=.*/c\collectStats=false" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
+sed -i "/^designerURL=.*/c\# designerURL=https://designer.openclinica.com/1.2/" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
 
 if [ -z "$LOG_LEVEL" ]; then
   echo "Using default log level."
