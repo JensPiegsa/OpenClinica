@@ -5,7 +5,7 @@ This folder contains the *Dockerfile*, a startup script and the following instru
 
 **IMPORTANT:** *This image is meant for trying out OpenClinica and not meant for running a production server or for storing important study data.*
 
-Steps
+Setup
 -----
 
 ### 1. Install Docker
@@ -64,21 +64,29 @@ boot2docker ip
 * open up [http://&lt;ip.of.your.host&gt;/OpenClinica](http://<ip.of.your.host>/OpenClinica) in your browser
 * first time login credentials: `root` / `12345678`
 
-### Adminstration
+Operation
+---------
 
-Backup a database dump to the current directory on the host:
+**To backup a database dump to the current directory on the host:**
 
 ```
 echo "postgres123" | sudo docker run -i --rm --link ocdb:ocdb -v $PWD:/tmp postgres:8 sh -c 'pg_dump -h ocdb -p $OCDB_PORT_5432_TCP_PORT -U postgres -F tar -v openclinica > /tmp/ocdb_pg_dump_$(date +%Y-%m-%d_%H-%M-%S).tar'
 ```
 
-Backup the OpenClinica data folder to the current directory on the host:
+**To backup the OpenClinica data folder to the current directory on the host:**
 
 ```sh
 sudo docker run --rm --volumes-from oc-data -v $PWD:/tmp piegsaj/openclinica tar cvf /tmp/oc_data_backup_$(date +%Y-%m-%d_%H-%M-%S).tar /tomcat/openclinica.data
 ```
 
-### Contribute
+**To remove all stopped containers on the host, except those named *-data:**
+
+```
+docker ps -a -f status=exited | grep -v '\-data *$'| awk '{if(NR>1) print $1}' | xargs -r docker rm
+```
+
+Contribute
+----------
 
 Feedback is welcome. The source is available on [Github](https://github.com/JensPiegsa/WildFly/). Please [report any issues](https://github.com/JensPiegsa/WildFly/issues).
 
