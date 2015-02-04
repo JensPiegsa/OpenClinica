@@ -14,7 +14,7 @@ sed -i "/^# rssMore=.*/c\rssMore=" /tomcat/webapps/OpenClinica/WEB-INF/classes/d
 sed -i "/^# about\.text1=.*/c\about.text1=Powered by <a href=\"https://mosaic-greifswald.de\">mosaic-greifswald.de</a>" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
 sed -i "/^# supportURL=.*/c\supportURL=https://mosaic-greifswald.de/openclinica" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
 sed -i "/^collectStats=.*/c\collectStats=false" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
-sed -i "/^designerURL=.*/c\# designerURL=https://designer.openclinica.com/1.2/" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
+sed -i "/^designerURL=.*/c\designerURL=" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
 
 if [ -z "$LOG_LEVEL" ]; then
   echo "Using default log level."
