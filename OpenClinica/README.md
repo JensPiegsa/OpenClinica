@@ -67,6 +67,12 @@ boot2docker ip
 Operation
 ---------
 
+**To show the OpenClinica logs:**
+
+```sh
+sudo docker logs -f oc
+```
+
 **To backup a database dump to the current directory on the host:**
 
 ```
