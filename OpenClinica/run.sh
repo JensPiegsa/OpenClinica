@@ -12,6 +12,7 @@ sed -i "/^userAccountNotification=.*/c\userAccountNotification=admin" /tomcat/we
 sed -i "/^# rssUrl=.*/c\rssUrl=" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
 sed -i "/^# rssMore=.*/c\rssMore=" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
 sed -i "/^# about\.text1=.*/c\about.text1=Powered by <a href=\"https://mosaic-greifswald.de\">mosaic-greifswald.de</a>" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
+sed -i "/^# about\.text2=.*/c\about.text2=<a href=\"https://mosaic-greifswald.de/das-mosaic-projekt/aktuelles\">Aktuelles</a>" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
 sed -i "/^# supportURL=.*/c\supportURL=https://mosaic-greifswald.de/openclinica" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
 sed -i "/^collectStats=.*/c\collectStats=false" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
 sed -i "/^designerURL=.*/c\designerURL=" /tomcat/webapps/OpenClinica/WEB-INF/classes/datainfo.properties
