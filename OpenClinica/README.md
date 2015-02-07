@@ -22,13 +22,14 @@ sudo docker run --name=ocdb-data -v /var/lib/postgresql/data postgres:8 true
 ### 3. Start the PostgreSQL database server
 
 ```sh
-sudo docker run --name=ocdb -d --volumes-from ocdb-data -e POSTGRES_PASSWORD=postgres123 postgres:8
+sudo docker run --name=ocdb -d --volumes-from ocdb-data -e POSTGRES_PASSWORD=postgres123 -p 5432:5432 postgres:8
 ```
+*Remove `-p 5432:5432` here, if the database port should not be published.*
 
 ### 4. Initialize the database
 
 ```sh
-sudo docker exec ocdb su postgres -c 'psql -c  "CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD '\''clinica'\'' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE" && psql -c "CREATE DATABASE openclinica WITH ENCODING='\''UTF8'\'' OWNER=clinica" && psql -c "CREATE DATABASE \"openclinica-ws\" WITH ENCODING='\''UTF8'\'' OWNER=clinica" && echo "host all  clinica    0.0.0.0/0  md5" >> $PGDATA/pg_hba.conf && /usr/lib/postgresql/$PG_MAJOR/bin/pg_ctl reload -D $PGDATA'
+sudo docker exec ocdb su postgres -c $'psql -c "CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD \'clinica\' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE" && psql -c "CREATE DATABASE openclinica WITH ENCODING=\'UTF8\' OWNER=clinica" && echo "host all  clinica    0.0.0.0/0  md5" >> $PGDATA/pg_hba.conf && /usr/lib/postgresql/$PG_MAJOR/bin/pg_ctl reload -D $PGDATA'
 ```
 
 ### 5. Start a data-only container with a volume for files written by OpenClinica
@@ -42,22 +43,15 @@ sudo docker run --name=oc-data -v /tomcat/openclinica.data piegsaj/openclinica t
 ```sh
 sudo docker run --name=oc -h oc -d --volumes-from oc-data -p 80:8080 -e TOMCAT_PASS="admin" -e LOG_LEVEL=INFO -e TZ=UTC-1 --link=ocdb:ocdb piegsaj/openclinica
 ```
-(the environment variables for logging level and timezone are optional)
+*The environment variables for log level and timezone are optional here.*
 
 ### 7. Get the external IP address
 
-From within the virtual machine you may use:
-
-```sh
-ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'
-```
-
-**or** if you are using boot2docker simply call from your host system:
+If you are using boot2docker simply call from your host system:
 
 ```sh
 boot2docker ip
 ```
-
 
 ### 8. Run OpenClinica
 
