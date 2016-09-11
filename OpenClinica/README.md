@@ -3,7 +3,7 @@ OpenClinica 3.4.1 via Docker
 
 This folder contains the *Dockerfile*, a startup script and the following instructions for running a Docker container  which you can use to give OpenClinica a try. An image built with this Dockerfile is available on [Docker Hub](https://registry.hub.docker.com/u/piegsaj/openclinica/).
 
-**IMPORTANT:** *This image is meant for trying out OpenClinica and not meant for running a production server or for storing important study data.*
+> **IMPORTANT:** *This image is meant for trying out OpenClinica and not meant for running a production server or for storing important study data.*
 
 Setup
 -----
@@ -11,7 +11,7 @@ Setup
 ### 1. Install Docker
 
 * follow the [installation instructions](http://docs.docker.com/installation/) for your host system
-    * **note:** with [boot2docker 1.2.0](https://github.com/boot2docker/boot2docker) the maximum RAM size can (only) be adjusted through the user interface of VirtualBox (run it from the start menu, stop the virtual machine, change the configuration to e.g. 4096MB, close it and use the desktop link "boot2docker Start")
+    * **note:** the maximum RAM size can be adjusted through the user interface of VirtualBox (run it from the start menu, stop the virtual machine, change the configuration to e.g. 4096MB, close it and start the virtual machine using `docker-machine`)
 
 ### 2. Start a data-only container with a volume for the database
 
@@ -88,5 +88,5 @@ docker ps -a -f status=exited | grep -v '\-data *$'| awk '{if(NR>1) print $1}' |
 Contribute
 ----------
 
-Feedback is welcome. The source is available on [Github](https://github.com/JensPiegsa/WildFly/). Please [report any issues](https://github.com/JensPiegsa/WildFly/issues).
+Feedback is welcome. The source is available on [Github](https://github.com/JensPiegsa/OpenClinica/). Please [report any issues](https://github.com/JensPiegsa/OpenClinica/issues).
 
