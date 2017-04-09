@@ -2,7 +2,7 @@
 
 The [OpenClinica Community edition](https://www.openclinica.com/community-edition-open-source-edc/) is free and open source and is distributed under the [GNU LGPL license](https://www.openclinica.com/gnu-lgpl-open-source-license). 
 
-This folder contains the *Dockerfile*, a startup script and the following instructions for running a Docker container  which you can use to give OpenClinica a try. An image built with this Dockerfile is available on [Docker Hub](https://registry.hub.docker.com/u/piegsaj/openclinica/).
+This repository contains the *Dockerfile*, a startup script and the following instructions for running a Docker container  which you can use to give OpenClinica a try. An image built with this Dockerfile is available on [Docker Hub](https://registry.hub.docker.com/u/piegsaj/openclinica/).
 
 > **IMPORTANT:** *This image is meant for trying out OpenClinica and not meant for running a production server or for storing important study data.*
 
@@ -10,14 +10,14 @@ This folder contains the *Dockerfile*, a startup script and the following instru
 
 ### 0. Install Docker
 
-* follow the [installation instructions](http://docs.docker.com/installation/) for your host system
-    * **note:** the maximum RAM size can be adjusted through the user interface of VirtualBox (run it from the start menu, stop the virtual machine, change the configuration to e.g. 4096MB, close it and start the virtual machine using `docker-machine`)
+* Follow the [installation instructions](http://docs.docker.com/installation/) for your host system
+* *If you are running Docker on VirtualBox:* the maximum RAM size can be adjusted through the user interface of VirtualBox (run it from the start menu, stop the virtual machine, change the configuration to e.g. 4096MB, close it and start the virtual machine using `docker-machine`)
 
 ### 1. Create a database init script
 
-* create a file `init-db.sh` that adds a user and a database for OpenClinica to PostgreSQL:
+* Create a file `init-db.sh` that adds a user and a database for OpenClinica to PostgreSQL:
 
-```sql
+```sh
 #!/bin/bash
 set -e
 
@@ -27,11 +27,11 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
 EOSQL
 ```
 
-* please adjust the database password
+* Please adjust the database password
 
 ### 2. Start a PostgreSQL database server
 
-* this expects the script residing in the current directory
+* This expects the `init-db.sh` script residing in the current directory
 
 ```sh
 docker container run --name ocdb -d -v ocdb-data:/var/lib/postgresql/data \
@@ -42,7 +42,7 @@ docker container run --name ocdb -d -v ocdb-data:/var/lib/postgresql/data \
  postgres:9.5
 ```
 
-* please change the root database password
+* Please change the root database password
 
 ### 3. Start Tomcat serving OpenClinica and OpenClinica-ws
 
@@ -58,35 +58,44 @@ docker container run --name oc -h oc -d -v oc-data:/tomcat/openclinica.data \
  -e DB_PASS=clinica \
  -e DB_PORT=5432 \
  -e SUPPORT_URL="https://www.openclinica.com/community-edition-open-source-edc/" \
- piegsaj/openclinica:OC-3.13
+ piegsaj/openclinica:oc-3.13
 ```
 
-* adjust `DB_HOST` and passwords accordingly
-* The environment variables for log level and timezone are optional here.*
+* Adjust `DB_HOST` and passwords accordingly
+* The environment variables for log level and timezone are optional here.
 
 ### 4. Run OpenClinica
 
-* open up [http://&lt;ip.of.your.host&gt;/OpenClinica](http://<ip.of.your.host>/OpenClinica) in your browser
-* first time login credentials: `root` / `12345678`
+* Open up [http://&lt;ip.of.your.host&gt;/OpenClinica](http://<ip.of.your.host>/OpenClinica) in your browser
+* First time login credentials: `root` / `12345678`
 
 ## Operation
 
 **To show the OpenClinica logs:**
 
 ```sh
-sudo docker container logs -f oc
+docker container logs -f oc
 ```
 
 **To backup a database dump to the current directory on the host:**
 
 ```
-echo "postgres123" | sudo docker container run -i --rm --link ocdb:ocdb -v $PWD:/tmp postgres:8 sh -c 'pg_dump -h ocdb -p $OCDB_PORT_5432_TCP_PORT -U postgres -F tar -v openclinica > /tmp/ocdb_pg_dump_$(date +%Y-%m-%d_%H-%M-%S).tar'
+echo "postgres123" | docker container run -i --rm \
+ --link ocdb:ocdb \
+ -v $PWD:/tmp \
+ postgres:9.5 sh -c '\
+ pg_dump -h ocdb -p $OCDB_PORT_5432_TCP_PORT -U postgres -F tar -v openclinica \
+ > /tmp/ocdb_pg_dump_$(date +%Y-%m-%d_%H-%M-%S).tar'
 ```
 
 **To backup the OpenClinica data folder to the current directory on the host:**
 
 ```sh
-sudo docker container run --rm -v oc-data:/tomcat/openclinica.data -v $PWD:/tmp piegsaj/openclinica tar cvf /tmp/oc_data_backup_$(date +%Y-%m-%d_%H-%M-%S).tar /tomcat/openclinica.data
+docker container run --rm \
+ -v oc-data:/tomcat/openclinica.data \
+ -v $PWD:/tmp \
+ piegsaj/openclinica:oc-3.13 \
+ tar cvf /tmp/oc_data_backup_$(date +%Y-%m-%d_%H-%M-%S).tar /tomcat/openclinica.data
 ```
 
 ## Contribute
