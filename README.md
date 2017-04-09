@@ -1,12 +1,12 @@
-OpenClinica 3.4.1 via Docker
-============================
+# OpenClinica 3.13 via Docker
+
+The [OpenClinica Community edition](https://www.openclinica.com/community-edition-open-source-edc/) is free and open source and is distributed under the [GNU LGPL license](https://www.openclinica.com/gnu-lgpl-open-source-license). 
 
 This folder contains the *Dockerfile*, a startup script and the following instructions for running a Docker container  which you can use to give OpenClinica a try. An image built with this Dockerfile is available on [Docker Hub](https://registry.hub.docker.com/u/piegsaj/openclinica/).
 
 > **IMPORTANT:** *This image is meant for trying out OpenClinica and not meant for running a production server or for storing important study data.*
 
-Setup
------
+## Setup
 
 ### 1. Install Docker
 
@@ -58,8 +58,7 @@ boot2docker ip
 * open up [http://&lt;ip.of.your.host&gt;/OpenClinica](http://<ip.of.your.host>/OpenClinica) in your browser
 * first time login credentials: `root` / `12345678`
 
-Operation
----------
+## Operation
 
 **To show the OpenClinica logs:**
 
@@ -85,8 +84,7 @@ sudo docker run --rm --volumes-from oc-data -v $PWD:/tmp piegsaj/openclinica tar
 docker ps -a -f status=exited | grep -v '\-data *$'| awk '{if(NR>1) print $1}' | xargs -r docker rm
 ```
 
-Contribute
-----------
+## Contribute
 
 Feedback is welcome. The source is available on [Github](https://github.com/JensPiegsa/OpenClinica/). Please [report any issues](https://github.com/JensPiegsa/OpenClinica/issues).
 
