@@ -8,52 +8,63 @@ This folder contains the *Dockerfile*, a startup script and the following instru
 
 ## Setup
 
-### 1. Install Docker
+### 0. Install Docker
 
 * follow the [installation instructions](http://docs.docker.com/installation/) for your host system
     * **note:** the maximum RAM size can be adjusted through the user interface of VirtualBox (run it from the start menu, stop the virtual machine, change the configuration to e.g. 4096MB, close it and start the virtual machine using `docker-machine`)
 
-### 2. Start a data-only container with a volume for the database
+### 1. Create a database init script
 
-```sh
-sudo docker run --name=ocdb-data -v /var/lib/postgresql/data postgres:8 true
+* create a file `init-db.sh` that adds a user and a database for OpenClinica to PostgreSQL:
+
+```sql
+#!/bin/bash
+set -e
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
+    CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD 'clinica' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE;
+    CREATE DATABASE openclinica WITH ENCODING='UTF8' OWNER=clinica;
+EOSQL
 ```
 
-### 3. Start the PostgreSQL database server
+* please adjust the database password
+
+### 2. Start a PostgreSQL database server
+
+* this expects the script residing in the current directory
 
 ```sh
-sudo docker run --name=ocdb -d --volumes-from ocdb-data -e POSTGRES_PASSWORD=postgres123 -p 5432:5432 postgres:8
+docker container run --name ocdb -d -v ocdb-data:/var/lib/postgresql/data \
+ -v $PWD/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh \
+ -p 5432:5432 \
+ -e POSTGRES_INITDB_ARGS="-E 'UTF-8' --locale=POSIX" \
+ -e POSTGRES_PASSWORD=postgres123 \
+ postgres:9.5
 ```
-*Remove `-p 5432:5432` here, if the database port should not be published.*
 
-### 4. Initialize the database
+* please change the root database password
+
+### 3. Start Tomcat serving OpenClinica and OpenClinica-ws
 
 ```sh
-sudo docker exec ocdb su postgres -c $'psql -c "CREATE ROLE clinica LOGIN ENCRYPTED PASSWORD \'clinica\' SUPERUSER NOINHERIT NOCREATEDB NOCREATEROLE" && psql -c "CREATE DATABASE openclinica WITH ENCODING=\'UTF8\' OWNER=clinica" && echo "host all  clinica    0.0.0.0/0  md5" >> $PGDATA/pg_hba.conf && /usr/lib/postgresql/$PG_MAJOR/bin/pg_ctl reload -D $PGDATA'
+docker container run --name oc -h oc -d -v oc-data:/tomcat/openclinica.data \
+ -p 80:8080 \
+ -e LOG_LEVEL=INFO \
+ -e TZ=UTC-1 \
+ -e DB_TYPE=postgres \
+ -e DB_HOST=192.168.99.100 \
+ -e DB_NAME=openclinica \
+ -e DB_USER=clinica \
+ -e DB_PASS=clinica \
+ -e DB_PORT=5432 \
+ -e SUPPORT_URL="https://www.openclinica.com/community-edition-open-source-edc/" \
+ piegsaj/openclinica:OC-3.13
 ```
 
-### 5. Start a data-only container with a volume for files written by OpenClinica
+* adjust `DB_HOST` and passwords accordingly
+* The environment variables for log level and timezone are optional here.*
 
-```sh
-sudo docker run --name=oc-data -v /tomcat/openclinica.data piegsaj/openclinica true
-```
-
-### 6. Start Tomcat serving OpenClinica and OpenClinica-ws
-
-```sh
-sudo docker run --name=oc -h oc -d --volumes-from oc-data -p 80:8080 -e TOMCAT_PASS="admin" -e LOG_LEVEL=INFO -e TZ=UTC-1 --link=ocdb:ocdb piegsaj/openclinica
-```
-*The environment variables for log level and timezone are optional here.*
-
-### 7. Get the external IP address
-
-If you are using boot2docker simply call from your host system:
-
-```sh
-boot2docker ip
-```
-
-### 8. Run OpenClinica
+### 4. Run OpenClinica
 
 * open up [http://&lt;ip.of.your.host&gt;/OpenClinica](http://<ip.of.your.host>/OpenClinica) in your browser
 * first time login credentials: `root` / `12345678`
@@ -63,25 +74,19 @@ boot2docker ip
 **To show the OpenClinica logs:**
 
 ```sh
-sudo docker logs -f oc
+sudo docker container logs -f oc
 ```
 
 **To backup a database dump to the current directory on the host:**
 
 ```
-echo "postgres123" | sudo docker run -i --rm --link ocdb:ocdb -v $PWD:/tmp postgres:8 sh -c 'pg_dump -h ocdb -p $OCDB_PORT_5432_TCP_PORT -U postgres -F tar -v openclinica > /tmp/ocdb_pg_dump_$(date +%Y-%m-%d_%H-%M-%S).tar'
+echo "postgres123" | sudo docker container run -i --rm --link ocdb:ocdb -v $PWD:/tmp postgres:8 sh -c 'pg_dump -h ocdb -p $OCDB_PORT_5432_TCP_PORT -U postgres -F tar -v openclinica > /tmp/ocdb_pg_dump_$(date +%Y-%m-%d_%H-%M-%S).tar'
 ```
 
 **To backup the OpenClinica data folder to the current directory on the host:**
 
 ```sh
-sudo docker run --rm --volumes-from oc-data -v $PWD:/tmp piegsaj/openclinica tar cvf /tmp/oc_data_backup_$(date +%Y-%m-%d_%H-%M-%S).tar /tomcat/openclinica.data
-```
-
-**To remove all stopped containers on the host, except those named *-data:**
-
-```
-docker ps -a -f status=exited | grep -v '\-data *$'| awk '{if(NR>1) print $1}' | xargs -r docker rm
+sudo docker container run --rm -v oc-data:/tomcat/openclinica.data -v $PWD:/tmp piegsaj/openclinica tar cvf /tmp/oc_data_backup_$(date +%Y-%m-%d_%H-%M-%S).tar /tomcat/openclinica.data
 ```
 
 ## Contribute
