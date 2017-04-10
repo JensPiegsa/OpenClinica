@@ -7,12 +7,13 @@ FROM tomcat:7.0-jre8
 
 MAINTAINER Jens Piegsa (piegsa@gmail.com)
 
-ENV  OC_HOME        $CATALINA_HOME/webapps/OpenClinica
-ENV  OC_WS_HOME     $CATALINA_HOME/webapps/OpenClinica-ws
+ENV  OC_HOME              $CATALINA_HOME/webapps/OpenClinica
+ENV  OC_WS_HOME           $CATALINA_HOME/webapps/OpenClinica-ws
 
-ENV  OC_VERSION     3.13
+ENV  OC_VERSION           3.13
 
-COPY run.sh         /run.sh
+COPY run.sh               /run.sh
+COPY wait-for-postgres.sh /wait-for-postgres.sh
 
 RUN  mkdir /tmp/oc && \
      cd /tmp/oc && \
