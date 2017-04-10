@@ -13,7 +13,6 @@ ENV  OC_WS_HOME           $CATALINA_HOME/webapps/OpenClinica-ws
 ENV  OC_VERSION           3.13
 
 COPY run.sh               /run.sh
-COPY wait-for-postgres.sh /wait-for-postgres.sh
 
 RUN  mkdir /tmp/oc && \
      cd /tmp/oc && \
