@@ -47,7 +47,7 @@ docker container run --name ocdb -d -v ocdb-data:/var/lib/postgresql/data \
 ### 3. Start Tomcat serving OpenClinica and OpenClinica-ws
 
 ```sh
-docker container run --name oc -h oc -d -v oc-data:/tomcat/openclinica.data \
+docker container run --name oc -h oc -d -v oc-data:/usr/local/tomcat/openclinica.data \
  -p 80:8080 \
  -e LOG_LEVEL=INFO \
  -e TZ=UTC-1 \
